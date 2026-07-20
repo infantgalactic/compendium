@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOURCE COMPENDIUM</title>
+    
+    <!-- Premium Geometric & Monospace Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg: #000000;
+            --surface: #0a0a0c;
+            --surface-card: #111114;
+            --border: #222226;
+            --border-light: #333338;
+            --text: #ffffff;
+            --text-muted: #94a3b8;
+            --text-reading: #cbd5e1;
+            --lang-theme: #94a3b8; 
+        }
+
+        [data-theme="light"] {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --surface-card: #ffffff;
+            --border: #e2e8f0;
+            --border-light: #cbd5e1;
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --text-reading: #334155;
+            --lang-theme: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            letter-spacing: -0.01em;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .viewport-container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        header {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            width: 100%;
+        }
+
+        .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .logo-mark {
+            font-family: 'Outfit', sans-serif;
+            font-size: 32px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -0.03em;
+            color: var(--text);
+            line-height: 1;
+        }
+
+        .toggle-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .toggle-txt {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.08em;
+        }
+
+        .switch-input-housing {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+
+        .switch-input-housing input { opacity: 0; width: 0; height: 0; }
+
+        .switch-slider-element {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--border);
+            border-radius: 34px;
+            transition: 0.3s ease;
+        }
+
+        .switch-slider-element::before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            transition: 0.3s ease;
+        }
+
+        input:checked + .switch-slider-element { background-color: #34c759; }
+        input:checked + .switch-slider-element::before { transform: translateX(20px); }
+
+        /* Navigation Tabs */
+        .tabs-wrapper {
+            display: flex;
+            justify-content: space-between;
+            background: var(--surface);
+            padding: 8px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            width: 100%;
+            overflow-x: auto;
+            gap: 4px;
+        }
+
+        .tab-trigger {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-muted);
+            padding: 12px 14px;
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+        }
+
+        .tab-trigger:hover {
+            color: var(--text);
+        }
+
+        /* Dynamic Track Header */
+        .track-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 32px 0 16px 0;
+            gap: 8px;
+        }
+
+        .track-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 32px;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: var(--lang-theme);
+            transition: color 0.4s ease;
+            letter-spacing: -0.02em;
+        }
+
+        .track-rank {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* Content Views */
+        .view-canvas {
+            display: none;
+            flex-direction: column;
+            gap: 40px;
+            width: 100%;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .view-canvas.active-view { display: flex; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Clean Resource Card */
+        .resource-card {
+            background: var(--surface-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .resource-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 4px; height: 100%;
+            background-color: var(--lang-theme);
+            transition: background-color 0.4s ease;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 20px;
+            gap: 20px;
+        }
+
+        .card-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text);
+            line-height: 1.3;
+        }
+
+        .time-badge {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 8px 16px;
+            border-radius: 6px;
+            white-space: nowrap;
+        }
+
+        .advice-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .advice-block {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .advice-label {
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--lang-theme);
+            transition: color 0.4s ease;
+        }
+
+        .advice-text {
+            font-size: 16px;
+            line-height: 1.7;
+            color: var(--text-reading);
+        }
+
+        .tier-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            margin-right: 6px;
+            text-transform: uppercase;
+        }
+
+        .tag-fact { background: rgba(74, 222, 128, 0.12); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.3); }
+        .tag-attributed { background: rgba(56, 189, 248, 0.12); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+        .tag-alleged { background: rgba(251, 191, 36, 0.12); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); }
+
+        .instruction-box {
+            background: var(--surface);
+            border: 1px dashed var(--border-light);
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+
+        .asset-link-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 14px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .asset-link-box:hover {
+            border-color: var(--lang-theme);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .asset-title {
+            font-weight: 700;
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        .asset-icon {
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .asset-link-box:hover .asset-icon {
+            color: var(--lang-theme);
+        }
+
+        /* Track Ledger */
+        .track-ledger {
+            margin-top: 60px; 
+            background: var(--surface-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ledger-title {
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .ledger-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--text-reading);
+        }
+
+        .ledger-row:last-child {
+            border-bottom: none;
+        }
+
+        .ledger-total {
+            border-top: 2px solid var(--text) !important;
+            margin-top: 8px;
+            padding-top: 20px;
+            color: var(--text);
+            font-weight: 700;
+            font-size: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Global Project Footer */
+        .global-footer {
+            margin-top: 40px;
+            background: var(--surface-card);
+            border: 2px solid #8b949e; 
+            border-radius: 12px;
+            padding: 28px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .global-footer-text {
+            font-family: 'Outfit', sans-serif;
+            font-size: 18px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--text);
+        }
+
+        .global-footer-time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        @media (max-width: 768px) {
+            .resource-card { padding: 28px 20px; }
+            .card-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .tabs-wrapper { flex-wrap: wrap; justify-content: flex-start; gap: 4px; padding: 8px; }
+            .tab-trigger { flex: 1 1 calc(50% - 4px); text-align: center; padding: 10px; }
+            .global-footer { flex-direction: column; gap: 16px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="viewport-container">
+        
+        <!-- Header & Utility -->
+        <header>
+            <div class="top-row">
+                <div class="logo-mark">SOURCE COMPENDIUM</div>
+                <div class="toggle-box">
+                    <span class="toggle-txt">Dark Mode</span>
+                    <label class="switch-input-housing">
+                        <input type="checkbox" id="theme-toggle" checked onclick="toggleTheme()">
+                        <span class="switch-slider-element"></span>
+                    </label>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs: Ordered Descending Left-to-Right (Rank 1 -> Rank 7) -->
+        <div class="tabs-wrapper">
+            <button class="tab-trigger active" id="default-tab" onclick="switchCanvasView('kashmir-pane', 'JAMMU & KASHMIR', 'Rank 1', '#94a3b8', this)">JAMMU & KASHMIR</button>
+            <button class="tab-trigger" onclick="switchCanvasView('intel-pane', 'INTEL APPARATUS', 'Rank 2', '#d97706', this)">INTELLIGENCE</button>
+            <button class="tab-trigger" onclick="switchCanvasView('cyber-pane', 'CYBER & 5GW', 'Rank 3', '#2563eb', this)">CYBER & 5GW</button>
+            <button class="tab-trigger" onclick="switchCanvasView('naxal-pane', 'LEFT-WING EXTREMISM', 'Rank 4', '#dc2626', this)">RED CORRIDOR</button>
+            <button class="tab-trigger" onclick="switchCanvasView('ne-pane', 'NORTHEAST FRONTIER', 'Rank 5', '#0d9488', this)">NORTHEAST</button>
+            <button class="tab-trigger" onclick="switchCanvasView('economic-pane', 'ECONOMIC THREATS', 'Rank 6', '#eab308', this)">ECONOMIC</button>
+            <button class="tab-trigger" onclick="switchCanvasView('maritime-pane', 'MARITIME DEFENSE', 'Rank 7', '#0284c7', this)">MARITIME</button>
+        </div>
+
+        <!-- Dynamic Track Header -->
+        <div class="track-header">
+            <div class="track-title" id="display-title">JAMMU & KASHMIR</div>
+            <div class="track-rank" id="display-rank">Rank 1</div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- TRACK 1: JAMMU & KASHMIR (RANK 1 - MOUNTAIN SLATE) -->
+        <!-- ========================================== -->
+        <div id="kashmir-pane" class="view-canvas active-view">
+            
+            <div class="resource-card">
+                <div class="card-header">
+                    <div class="card-title">1. Post-Independence Roots: Early Administrative Status Fractures (1953)</div>
+                    <div class="time-badge">1.0 H</div>
+                </div>
+                <div class="advice-section">
+                    <div class="advice-block">
+                        <div class="advice-label">Verified Intelligence Profile</div>
+                        <div class="advice-text"><span class="tier-tag tag-fact">Fact</span>Sheikh Abdullah was officially dismissed as Prime Minister of Jammu and Kashmir and placed under arrest on 9 August 1953 under executive directives from the Sadar-i-Riyasat. <span class="tier-tag tag-fact">Fact</span>This followed formal legal disagreements over the execution bounds of the 1952 Delhi Agreement.</div>
+                    </div>
+                </div>
+                <a href="https://www.idsa.in/system/files/monograph/monograph62.pdf" target="_blank" class="asset-link-box">
+                    <span class="asset-title">Open Text: MP-IDSA Monograph Portfolio — Boundary Realities</span>
+                    <span class="asset-icon">→</span>
+                </a>
+            </div>
+
+            <div class="resource-card">
+                <div class="card-header">
+                    <div class="card-title">2. Deep Past (Milestone A): The January 1990 Resignation Vacuum</div>
+                    <div class="time-badge">1.0 H</div>
+                </div>
+                <div class="advice-section">
+                    <div class="advice-block">
+                        <div class="advice-label">Verified Intelligence Profile</div>
+                        <div class="advice-text"><span class="tier-tag tag-fact">Fact</span>On the night of 19 January 1990, Chief Minister Farooq Abdullah submitted his resignation to the state government in immediate protest against the central appointment of Governor Jagmohan. <span class="tier-tag tag-alleged">Assessed (Widely)</span>Independent counter-insurgency researchers assess that this specific administrative withdrawal created an internal security power vacuum during the concurrent peak of targeted civilian migrations. <span class="tier-tag tag-alleged">Alleged (Widely)</span>Former intelligence handles have alleged in professional memoirs that deep interpersonal relationships and hospitality exchanges between regional political actors and senior intelligence controllers sometimes influenced objective validation routines of field reporting.</div>
+                    </div>
+                </div>
+                <a href="https://www.idsa.in/system/files/monograph/monograph61.pdf" target="_blank" class="asset-link-box">
+                    <span class="asset-title">Open Text: MP-IDSA Monograph Portfolio — Changed Security Situation in J&K</span>
+                    <span class="asset-icon">→</span>
+                </a>
+            </div>
+
+            <div class="resource-card">
+                <div class="card-header">
+                    <div class="card-title">3. Deep Past (Milestone B): Sub-Conventional Incursions and Border Shifts (1999)</div>
+                    <div class="time-badge">0.5 H</div>
+                </div>
+                <div class="advice-section">
+                    <div class="advice-block">
+                        <div class="advice-label">Verified Intelligence Profile</div>
+                        <div class="advice-text"><span class="tier-tag tag-fact">Fact</span>In May 1999, the Indian Armed Forces discovered large-scale sub-conventional armed infiltrations across the Line of Control in the Kargil sector. <span class="tier-tag tag-attributed">Officially Attributed</span>The Kargil Review Committee Report formally established that cross-border intelligence collection frameworks suffered severe transmission latency lapses before the kinetic escalation.</div>
+                    </div>
+                </div>
+                <a href="https://idsa.in/system/files/jds/13-3-2019-kargil-and-its-impact.pdf" target="_blank" class="asset-link-box">
+                    <span class="asset-title">Open Text: MP-IDSA Journal Report — Post-War Intelligence System Changes</span>
+                    <span class="asset-icon">→</span>
+                </a>
+            </div>
+
+            <div class="resource-card">
+                <div class="card-header">
+                    <div class="card-title">4. Deep Past (Milestone C): Counter-Insurgency Grids & Legislative Changes (2000–2019)</div>
+                    <div class="time-badge">1.0 H</div>
+                </div>
+                <div class="advice-section">
+                    <div class="advice-block">
+                        <div class="advice-label">Verified Intelligence Profile</div>
+                        <div class="advice-text"><span class="tier-tag tag-fact">Fact</span>Parliament executed the legislative abrogation of Article 370 provisions on 5 August 2019, transitioning the state into two distinct Union Territories. <span class="tier-tag tag-alleged">Assessed (Widely)</span>Independent security institutes assess that the subsequent deployment of the specialized grid network successfully depressed local valley recruitment metrics to historical lows.</div>
+                    </div>
+                </div>
+                <a href="https://indiankanoon.org/doc/77326406/" target="_blank" class="asset-link-box">
+                    <span class="asset-title">Open Judgment: Supreme Court of India — In Re: Article 370 (2023)</span>
+                    <span class="asset-icon">→</span>
+                </a>
+            </div>
+
+            <div class="resource-card">
+                <div class="card-header">
+                    <div class="card-title">5. Current Security Horizon: Re-Routing to the Southern Pir Panjal Range (2025–2026)</div>
+                    <div class="time-badge">0.5 H</div>
+                </div>
+                <div class="advice-section">
+                    <div class="advice-block">
+                        <div class="advice-label">Verified Intelligence Profile</div>
+                        <div class="advice-text"><span class="tier-tag tag-fact">Fact</span>Deployment logs from 2025 and 2026 document a string of kinetic encounters inside the forested belts of Rajouri, Poonch, and Kathua. <span class="tier-tag tag-alleged">Assessed (Widely)</span>Sub-conventional external militant networks are assessed by security monitors to have re-routed active transit infrastructure loops south of the Pir Panjal range to exploit dense forest terrain blind spots and border telecommunication tower arrays.</div>
+                    </div>
+                </div>
+                <a href="https://www.satp.org/satporgtp/countries/india/states/jandk/index.html" target="_blank" class="asset-link-box">
+                    <span class="asset-title">Open Portal: SATP South Asia Terrorism Portal — J&K Conflict Data</span>
+                    <span class="asset-icon">→</span>
+                </a>
+            </div>
+
+            <!-- Track Ledger -->
+            <div class="track-ledger">
+                <div class="ledger-title">Jammu & Kashmir Track Summation</div>
+                <div class="ledger-row"><span>1. Post-Independence Roots</span><span>1.0 H</span></div>
+                <div class="ledger-row"><span>2. Deep Past: Resignation Vacuum</span><span>1.0 H</span></div>
+                <div class="ledger-row"><span>3. Deep Past: Kargil Intel Shocks</span><span>0.5 H</span></div>
+                <div class="ledger-row"><span>4. Deep Past: Post-2000 Counter-Insurgency</span><span>1.0 H</span></div>
+                <div class="ledger-row"><span>5. Current Security Horizon (2025-2026)</span><span>0.5 H</span></div>
+                <div class="ledger-row ledger-total"><span>Total Theme Duration</span><span>4.0 H</span></div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- TRACK 2: INTELLIGENCE APPARATUS (RANK 2 - TACTICAL AMBER) -->
+        <!-- ========================================== -->
+        <div id="intel-pane" class="view-canvas">
+            
+            <div class="resource-card">
+                <div class="card-header">
+                    <div class="card-title">1. Post-Independence Roots: The 1968 Separation of External Collection Mandates</div>
+                    <div class="time-badge">4.0 H</div>
+                </div>
+                <div class="advice-section">
+                    <div class="advice-block">
+                        <div class="advice-label">Verified Intelligence Profile</div>
+                        <div class="advice-text"><span class="tier-tag tag-fact">Fact</span>Following intelligence evaluations conducted after the 1962 and 1965 conflicts, the central government created the Research and Analysis Wing (R&AW) on 21 September 1968 under the direction of R.N. Kao. <span class="tier-tag tag-fact">Fact</span>This structural division split the collection matrix, assigning external intelligence gathering exclusively to R&AW while the Intelligence Bureau (IB) retained the domestic internal security charter.</div>
+                    </div>
+                </div>
+                <a href="https://www.britannica.com/topic/Research-and-Analysis-Wing" target="_blank" class="asset-link-box">
+                    <span class="asset-title">Open Encyclopedia Entry: Britannica — R&AW Founding and History</span>
+                    <span class="asset-icon">→</span>
+                </a>
+            </div>
+
+            <div class="resource-card">
+                <div class="card-header">
+                    <div class="card-title">2. Deep Past (Milestone A): The 1999 Kargil Coordination Failures</div>
+                    <div class="time-badge">1.0 H</div>
+                </div>
+                <div class="advice-section">
+                    <div class="advice-block">
+                        <div class="advice-label">Verified Intelligence Profile</div>
+                        <div class="advice-text"><span class="tier-tag tag-fact">Fact</span>The official Kargil Review Committee Report (2000) documented significant operational data sharing gaps between military intelligence, the IB, and external collection arms before the sub-conventional escalation. <span class="tier-tag tag-alleged">Assessed (Widely)</span>Independent security analysts assess that under the stability-instability paradox, nuclear parity downregulates full-scale conventional warfare options, automatically incentivizing adversaries to maximize sub-conventional proxy campaigns that exploit inter-agency silos.</div>
+                    </div>
+                </div>
+                <a href="https://idsa.in/system/files/jds/13-3-2019-kargil-and-its-impact.pdf" target="_blank" class="asset-link-box">
+                    <span class="asset-title">Open Paper: MP-IDSA Journal Report — Post-War Intelligence Adaptations</span>
+                    <span class="asset-icon">→</span>
+                </a>
+            </div>
+
+            <div class="resource-card">
+                <div class="card-header">
+                    <div class="card-title">3. Deep Past (Milestone B): Multi-Agency Intercept Latency Lapses (2008)</div>
+                    <div class="time-badge">0.5 H</div>
+                </div>
+                <div class="advice-section">
+                    <div class="advice-block">
+                        <div class="advice-label">Verified Intelligence Profile</div>
+                        <div class="advice-text"><span class="tier-tag tag-fact">Fact</span>High-level enquiry findings looking into the 26/11 Mumbai terror attacks confirmed that multiple separate signal intercepts regarding maritime entry vectors failed to clear multi-agency verification layers in real-time. <span class="tier-tag tag-alleged">Assessed (Widely)</span>Independent security reviewers assess that large intelligence bureaucracies naturally prioritize data containment to safeguard internal credit, establishing structural processing delays.</div>
+                    </div>
+                </div>
+                <a href="https://thewire.in/security/26-11-mumbai-terror-attack-inquiry-committee" target="_blank" class="asset-link-box">
+                    <span class="asset-title">Open Full Text: High-Level Enquiry Committee (Pradhan Commission) Report</span>
+                    <span class="asset-icon">→</span>
+                </a>
+            </div>
+
+            <div class="resource-card">
+                <div class="card-header">
+                    <div class="card-title">4. Current Security Horizon: National Counter-Terror Doctrine Integration (2025–2026)</div>
+                    <div class="time-badge">1.5 H</div>
+                </div>
+                <div class="advice-section">
+                    <div class="advice-block">
+                        <div class="advice-label">Verified Intelligence Profile</div>
+                        <div class="advice-text"><span class="tier-tag tag-fact">Fact</span>The codification of the PRAHAAR framework in 2026 established a unified counter-terrorism doctrine focused on tracking automated logistics and financing networks. <span class="tier-tag tag-attributed">Officially Attributed</span>The Ministry of Home Affairs has formally designated the Multi-Agency Centre (MAC) inside the IB as the primary platform for real-time telemetry fusion across 28 distinct central and state intelligence networks.</div>
+                    </div>
+                </div>
+                <a href="https://www.mha.gov.in/sites/default/files/PRAHAAREng_23022026.pdf" target="_blank" class="asset-link-box">
+                    <span class="asset-title">Open Policy Document: MHA — PRAHAAR National Counter-Terrorism Policy (2026)</span>
+                    <span class="asset-icon">→</span>
+                </a>
+            </div>
+
+            <!-- Track Ledger -->
+            <div class="track-ledger">
+                <div class="ledger-title">Intelligence Apparatus Track Summation</div>
+                <div class="ledger-row"><span>1. 1968 Architecture Split</span><span>4.0 H</span></div>
+                <div class="ledger-row"><span>2. Deep Past: Kargil Coordination Lapses</span><span>1.0 H</span></div>
+                <div class="ledger-row"><span>3. Deep Past: 2008 Intercept Latency</span><span>0.5 H</span></div>
+                <div class="ledger-row"><span>4. Current Security Horizon (2025-2026)</span><span>1.5 H</span></div>
+                <div class="ledger-row ledger-total"><span>Total Theme Duration</span><span>7.0 H</span></div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- TRACK 3: CYBER & 5GW (RANK 3 - INTERNET WEBSITE BLUE) -->
+        <!-- ========================================== -->
+        <div id="cyber-pane" class="view-canvas">
+            
+            <div class="resource-card">
+                <div class="card-header">
+                    <div class="card-title">1. Post-Independence Genesis: Analog Frontier Frequency Jamming Matrices</div>
+                    <div class="time-badge">1.0 H</div>
+                </div>
+                <div class="advice-section">
+                    <div class="advice-block">
+                        <div class="advice-label">Verified Intelligence Profile</div>
+                        <div class="advice-text"><span class="tier-tag tag-fact">Fact</span>During mid-20th-century conventional border conflicts, electronic spectrum engagement was limited to local analog radio frequency jamming along high-altitude boundary perimeters. <span class="tier-tag tag-fact">Fact</span>These signals operations optimized purely for temporary communication delays within tactical field units rather than global data infrastructure exploitation.</div>
+                    </div>
+                </div>
+                <a href="https://www.idsa.in/about-mp-idsa/system/files/strategicanalysis_vanand_1206.pdf" target="_blank" class="asset-link-box">
+                    <span class="asset-title">Open Paper: MP-IDSA Technical History of Spectrum Conflict</span>
+                    <span class="asset-icon">→</span>
+                </a>
+            </div>
+
+            <div class="resource-card">
+                <div class="card-header">
+                    <div class="card-title">2. Deep Past (Milestone A): Advanced Persistent Threat (APT) Grid Probes</div>
+                    <div class="time-badge">0.5 H</div>
+                </div>
+                <div class="advice-section">
+                    <div class="advice-block">
+                        <div class="advice-label">Verified Intelligence Profile</div>
+                        <div class="advice-text"><span class="tier-tag tag-fact">Fact</span>Cyber security logs from the 2010s documented a structural surge in advanced spear-phishing campaigns targeting the administrative servers of regional infrastructure departments. <span class="tier-tag tag-attributed">Officially Attributed</span>Technical directives from CERT-In identified specific malicious indicators matching foreign APT command profiles mapping legacy SCADA nodes.</div>
+                    </div>
+                </div>
+                <a href="https://www.cert-in.org.in/PDF/CERT-In_Directions_70B_28.04.2022.pdf" target="_blank" class="asset-link-box">
+                    <span class="asset-title">Open Directive: CERT-In — Statutory Directions under Section 70B</span>
+                    <span class="asset-icon">→</span>
+                </a>
+            </div>
+
+            <div class="resource-card">
+                <div class="card-header">
+                    <div class="card-title">3. Deep Past (Milestone B): Legacy SCADA Networks and RedEcho Payload Deployment (2020)</div>
+                    <div class="time-badge">0.5 H</div>
+                </div>
+                <div class="advice-section">
+                    <div class="advice-block">
+                        <div class="advice-label">Verified Intelligence Profile</div>
+                        <div class="advice-text"><span class="tier-tag tag-fact">Fact</span>On 12 October 2020, a major power grid outage caused structural infrastructure paralysis across the metropolitan segment of Mumbai during an active border standoff. <span class="tier-tag tag-alleged">Assessed (Widely)</span>A threat intelligence assessment published by Recorded Future's Insikt Group assessed that a foreign state-sponsored advanced persistent threat, designated as RedEcho, pre-positioned custom malware payloads inside critical regional load dispatch infrastructure.</div>
+                    </div>
+                </div>
+                <a href="https://www.recordedfuture.com/research/redecho-targeting-indian-power-sector" target="_blank" class="asset-link-box">
+                    <span class="asset-title">Open Report: Recorded Future Insikt Group — RedEcho Targeting Indian Power Sector</span>
+                    <span class="asset-icon">→</span>
+                </a>
+            </div>
+
+            <div class="resource-card">
+                <div class="card-header">
+                    <div class="card-title">4. Current Security Horizon: Incident Response Metrics and AI Asymmetry (2025–2026)</div>
+                    <div class="time-badge">0.5 H</div>
+                </div>
+                <div class="advice-section">
+                    <div class="advice-block">
+                        <div class="advice-label">Verified Intelligence Profile</div>
+                        <div class="advice-text"><span class="tier-tag tag-fact">Fact</span>Performance metrics released by CERT-In documented the containment of over 29.44 lakh cybersecurity incidents during the active reporting loop up to 2025. <span class="tier-tag tag-attributed">Officially Attributed</span>The Ministry of Electronics and Information Technology (MeitY) National Digital Threat Report 2025–2026 formally identified AI-driven adaptive ransomware payloads and automated supply-chain vendor portal breaches as primary systemic risks.</div>
+                    </div>
+                </div>
+                <a href="https://www.pib.gov.in/PressReleasePage.aspx?PRID=2217537&lang=1&reg=3" target="_blank" class="asset-link-box">
+                    <span class="asset-title">Open Press Release: PIB — CERT-In 2025 Incident Response Statistics</span>
+                    <span class="asset-icon">→</span>
+                </a>
+            </div>
+
+            <!-- Track Ledger -->
+            <div class="track-ledger">
+                <div class="ledger-title">Cyber & 5GW Track Summation</div>
+                <div class="ledger-row"><span>1. Analog Border Jamming Roots</span><span>1.0 H</span></div>
+                <div class="ledger-row"><span>2. Deep Past: Early APT Mappings</span><span>0.5 H</span></div>
+                <div class="ledger-row"><span>3. Deep Past: RedEcho SCADA Interdiction</span><span>0.5 H</span></div>
+                <div class="ledger-row"><span>4. Contemporary AI Asymmetry (2025–2026)</span><span>0.5 H</span></div>
+                <div class="ledger-row ledger-total"><span>Total Theme Duration</span><span>2.5 H</span></div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- TRACK 4: LEFT-WING EXTREMISM (RANK 4 - CRIMSON RED) -->
+        <!-- ========================================== -->
+        <div id="naxal-pane" class="view-canvas">
+            
+            <div class="resource-card">
+                <div class="card-header">
+                    <div class="card-title">1. Post-Independence Roots: The 1967 Naxalbari Tactical Uprising</div>
+                    <div class="time-badge">0.5 H</div>
+                </div>
+                <div class="advice-section">
+                    <div class="advice-block">
+                        <div class="advice-label">Verified Intelligence Profile</div>
+                        <div class="advice-text"><span class="tier-tag tag-fact">Fact</span>An armed peasant clash occurred at Naxalbari, West Bengal on 25 May 1967, directed by Charu Majumdar and Kanu Sanyal following land tenure disputes. <span class="tier-tag tag-attributed">Officially Attributed</span>The Ministry of Home Affairs formally labels the resulting armed operational infrastructure as Left-Wing Extremism (LWE).</div>
+                    </div>
+                </div>
+                <a href="https://www.mha.gov.in/en/divisionofmha/left-wing-extremism-division" target="_blank" class="asset-link-box">
+                    <span class="asset-title">Open Portal: MHA — Left Wing Extremism Division Background</span>
+                    <span class="asset-icon">→</span>
+                </a>
+            </div>
+
+            <div class="resource-card">
+                <div class="card-header">
+                    <div class="card-title">2. Deep Past (Milestone A): PWG Consolidation and Spatial Expansion (1980–1990s)</div>
+                    <div class="time-badge">0.5 H</div>
+                </div>
+                <div class="advice-section">
+                    <div class="advice-block">
+                        <div class="advice-label">Verified Intelligence Profile</div>
+                        <div class="advice-text"><span class="tier-tag tag-fact">Fact</span>The People's War Group (PWG) was established in 1980 by Kondapalli Seetharamaiah inside Andhra Pradesh. <span class="tier-tag tag-alleged">Assessed (Widely)</span>Independent security analysts assess that throughout the 1980s and 1990s, the group systematically expanded its spatial footprint across state borders into the forest tracts of Central India to form a continuous guerrilla zone.</div>
+                    </div>
+                </div>
+                <a href="https://www.satp.org/satporgtp/countries/india/terroristoutfits/pwg.htm" target="_blank" class="asset-link-box">
+                    <span class="asset-title">Open Profile: SATP — People's War Group (PWG) Dossier</span>
+                    <span class="asset-icon">→</span>
+                </a>
+            </div>
+
+            <div class="resource-card">
+                <div class="card-header">
+                    <div class="card-title">3. Deep Past (Milestone B): The 2004 Merger and Protection Levy Economies</div>
+                    <div class="time-badge">0.5 H</div>
+                </div>
+                <div class="advice-section">
+                    <div class="advice-block">
+                        <div class="advice-label">Verified Intelligence Profile</div>
+                        <div class="advice-text"><span class="tier-tag tag-fact">Fact</span>On 21 September 2004, the merger of the PWG and the Maoist Communist Centre of India (MCCI) formalized the creation of the unified CPI (Maoist) organization. <span class="tier-tag tag-alleged">Assessed (Widely)</span>Independent researchers assess that the consolidated leadership optimized its funding loops by extracting protection levies from mineral extraction companies and contractors inside the central mining belt.</div>
+                    </div>
+                </div>
+                <a href="https://www.stimson.org/2011/mining-and-maoists/" target="_blank" class="asset-link-box">
+                    <span class="asset-title">Open Text: Stimson Center Analysis — Mineral Extraction Economics</span>
+                    <span class="asset-icon">→</span>
+                </a>
+            </div>
+
+            <div class="resource-card">
+                <div class="card-header">
+                    <div class="card-title">4. Current Security Horizon: Operational Area Containment Trends (2025–2026)</div>
+                    <div class="time-badge">0.5 H</div>
+                </div>
+                <div class="advice-section">
+                    <div class="advice-block">
+                        <div class="advice-label">Verified Intelligence Profile</div>
+                        <div class="advice-text"><span class="tier-tag tag-fact">Fact</span>MHA data registries from 2025 and 2026 show that the active LWE operational footprint has contracted significantly, shifting armed remnants into shrinking tri-junction forest sectors. <span class="tier-tag tag-attributed">Officially Attributed</span>Government notifications have codified targeted actions under the multi-agency strategy to freeze overground financial networks running through urban proxy structures.</div>
+                    </div>
+                </div>
+                <a href="https://www.satp.org/satporgtp/countries/india/maoist/index.html" target="_blank" class="asset-link-box">
+                    <span class="asset-title">Open Portal: SATP South Asia Terrorism Portal — LWE Operations Index</span>
+                    <span class="asset-icon">→</span>
+                </a>
+            </div>
+
+            <!-- Track Ledger -->
+            <div class="track-ledger">
+                <div class="ledger-title">Left-Wing Extremism Track Summation</div>
+                <div class="ledger-row"><span>1. Agrarian Kinetic Inception</span><span>0.5 H</span></div>
+                <div class="ledger-row"><span>2. Deep Past: PWG Expansion</span><span>0.5 H</span></div>
+                <div class="ledger-row"><span>3. Deep Past: 2004 Extortion Merger</span><span>0.5 H</span></div>
+                <div class="ledger-row"><span>4. Current Security Horizon (2025-2026)</span><span>0.5 H</span></div>
+                <div class="ledger-row ledger-total"><span>Total Theme Duration</span><span>2.0 H</span></div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- TRACK 5: NORTHEAST FRONTIER (RANK 5 - FRONTIER TEAL) -->
+        <!-- ========================================== -->
+        <div id="ne-pane" class="view-canvas">
+            
+            <div class="resource-card">
+                <div class="card-header">
+                    <div class="card-title">1. Post-Independence Genesis: The 1956 Naga Insurgency Framework</div>
+                    <div class="time-badge">0.5 H</div>
+                </div>
+                <div class="advice-section">
+                    <div class="advice-block">
+                        <div class="advice-label">Verified Intelligence Profile</div>
+                        <div class="advice-text"><span class="tier-tag tag-fact">Fact</span>In 1956, Angami Zapu Phizo organized the underground Naga Federal Government (NFG) and the Naga Federal Army (NFA) to assert an independent sovereign state outside the Indian Union. <span class="tier-tag tag-fact">Fact</span>Following these armed cross-border mobilizations, the central government enacted the Armed Forces (Special Powers) Act (AFSPA) in 1958 to enforce perimeter security control.</div>
+                    </div>
+                </div>
+                <a href="https://www.mha.gov.in/sites/default/files/armed_forces_special_powers_act1958.pdf" target="_blank" class="asset-link-box">
+                    <span class="asset-title">Open Statute: MHA — Armed Forces (Special Powers) Act, 1958 (Full Text)</span>
+                    <span class="asset-icon">→</span>
+                </a>
+            </div>
+
+            <div class="resource-card">
+                <div class="card-header">
+                    <div class="card-title">2. Deep Past (Milestone A): MNF & ULFA Cross-Border Sanctuary Operations (1960–1980s)</div>
+                    <div class="time-badge">1.0 H</div>
+                </div>
+                <div class="advice-section">
+                    <div class="advice-block">
+                        <div class="advice-label">Verified Intelligence Profile</div>
+                        <div class="advice-text"><span class="tier-tag tag-fact">Fact</span>The Mizo National Front (MNF) led an open armed rebellion on 28 February 1966, launching coordinated strikes against administrative treasuries. <span class="tier-tag tag-alleged">Assessed (Widely)</span>Military historians assess that early operational cadres from both MNF and the subsequent United Liberation Front of Asom (ULFA, established 1979) relied completely on cross-border sanctuary staging points inside East Pakistan and Bhutan to bypass deployment pressure.</div>
+                    </div>
+                </div>
+                <a href="https://idsa.in/system/files/jds/jds_8_4_2014_sushilkumarsharma.pdf" target="_blank" class="asset-link-box">
+                    <span class="asset-title">Open Paper: MP-IDSA Journal — Cross-Border Sanctuaries of NE Insurgent Groups</span>
+                    <span class="asset-icon">→</span>
+                </a>
+            </div>
+
+            <div class="resource-card">
+                <div class="card-header">
+                    <div class="card-title">3. Deep Past (Milestone B): Ceasefires and Golden Triangle Narco-Logistics Axis</div>
+                    <div class="time-badge">0.5 H</div>
+                </div>
+                <div class="advice-section">
+                    <div class="advice-block">
+                        <div class="advice-label">Verified Intelligence Profile</div>
+                        <div class="advice-text"><span class="tier-tag tag-fact">Fact</span>The Government of India signed a formal ceasefire agreement with the NSCN-IM on 25 July 1997 to freeze territorial insurgent operations. <span class="tier-tag tag-alleged">Assessed (Widely)</span>Independent security analysts assess that during the subsequent enforcement of Suspension of Operations (SoO) loops, splinter armed cells shifted from traditional local funding lines into cross-border narco-trafficking networks linked directly to Myanmar's Golden Triangle to sustain organizational liquidity.</div>
+                    </div>
+                </div>
+                <a href="https://dras.in/myanmar-insurgencies-impact-on-northeast-india/" target="_blank" class="asset-link-box">
+                    <span class="asset-title">Open Text: DRAS Frontier Transit Architecture Report</span>
+                    <span class="asset-icon">→</span>
+                </a>
+            </div>
+
+            <div class="resource-card">
+                <div class="card-header">
+                    <div class="card-title">4. Current Security Horizon: Transnational Border Control Coordination (2025–2026)</div>
+                    <div class="time-badge">0.5 H</div>
+                </div>
+                <div class="advice-section">
+                    <div class="advice-block">
+                        <div class="advice-label">Verified Intelligence Profile</div>
+                        <div class="advice-text"><span class="tier-tag tag-fact">Fact</span>In 2025 and 2026, bilateral defense and administrative reviews between New Delhi and Naypyidaw modified security parameters along the 1,643-km land boundary. <span class="tier-tag tag-attributed">Officially Attributed</span>The Ministry of External Affairs formally identified cross-border cyber fraud networks, drug pipelines, and arms trafficking networks as strategic security targets requiring the complete termination of legacy open movement perimeters.</div>
+                    </div>
+                </div>
+                <a href="https://www.mha.gov.in/en/divisionofmha/border-management-i-division" target="_blank" class="asset-link-box">
+                    <span class="asset-title">Open Portal: MHA — Border Management-I Division (India–Myanmar)</span>
+                    <span class="asset-icon">→</span>
+                </a>
+            </div>
+
+            <!-- Track Ledger -->
+            <div class="track-ledger">
+                <div class="ledger-title">Northeast Frontier Track Summation</div>
+                <div class="ledger-row"><span>1. Naga National Council Template</span><span>0.5 H</span></div>
+                <div class="ledger-row"><span>2. Deep Past: MNF & ULFA Operations</span><span>1.0 H</span></div>
+                <div class="ledger-row"><span>3. Deep Past: Golden Triangle Transition</span><span>0.5 H</span></div>
+                <div class="ledger-row"><span>4. Current Security Horizon (2025-2026)</span><span>0.5 H</span></div>
+                <div class="ledger-row ledger-total"><span>Total Theme Duration</span><span>2.5 H</span></div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- TRACK 6: ECONOMIC THREATS (RANK 6 - BULLION GOLD) -->
+        <!-- ========================================== -->
+        <div id="economic-pane" class="view-canvas">
+            
+            <div class="resource-card">
+                <div class="card-header">
+                    <div class="card-title">1. Post-Independence Genesis: Trust-Based Parallel Value Transfer Lanes (IVTS)</div>
+                    <div class="time-badge">2.0 H</div>
+                </div>
+                <div class="advice-section">
+                    <div class="advice-block">
+                        <div class="advice-label">Verified Intelligence Profile</div>
+                        <div class="advice-text"><span class="tier-tag tag-fact">Fact</span>Trust-based informal value transfer systems (IVTS), traditionally known as Hawala, operated across post-partition commercial channels to settle cross-border capital outside formal banking networks. <span class="tier-tag tag-fact">Fact</span>These alternative financial tracks clear transactions using non-physical token codes and ledger balances, leaving zero data entries inside state registries.</div>
+                    </div>
+                </div>
+                <a href="https://www.fatf-gafi.org/en/publications/Methodsandtrends/Role-hawalas-in-ml-tf.html" target="_blank" class="asset-link-box">
+                    <span class="asset-title">Open Report: FATF — Role of Hawala in Money Laundering & Terrorist Financing</span>
+                    <span class="asset-icon">→</span>
+                </a>
+            </div>
+
+            <div class="resource-card">
+                <div class="card-header">
+                    <div class="card-title">2. Deep Past (Milestone A): Fake Indian Currency Note (FICN) Smuggling Loops</div>
+                    <div class="time-badge">1.0 H</div>
+                </div>
+                <div class="advice-section">
+                    <div class="advice-block">
+                        <div class="advice-label">Verified Intelligence Profile</div>
+                        <div class="advice-text"><span class="tier-tag tag-fact">Fact</span>Throughout the 1990s and 2000s, state security services seized massive volumes of high-quality Fake Indian Currency Notes (FICN) at neutral transit boundary checkpoints. <span class="tier-tag tag-attributed">Officially Attributed</span>National Investigation Agency (NIA) chargesheets have formally accused foreign state-sponsored syndicates of printing and smuggling these counterfeits to supply domestic militant cells.</div>
+                    </div>
+                </div>
+                <a href="https://idsa.in/system/files/jds_4_1_vpanand.pdf" target="_blank" class="asset-link-box">
+                    <span class="asset-title">Open Paper: MP-IDSA Illicit Flow Dynamics and Secrecy Analysis</span>
+                    <span class="asset-icon">→</span>
+                </a>
+            </div>
+
+            <div class="resource-card">
+                <div class="card-header">
+                    <div class="card-title">3. Deep Past (Milestone B): Trade-Based Money Laundering and Shell Matrixes</div>
+                    <div class="time-badge">1.5 H</div>
+                </div>
+                <div class="advice-section">
+                    <div class="advice-block">
+                        <div class="advice-label">Verified Intelligence Profile</div>
+                        <div class="advice-text"><span class="tier-tag tag-fact">Fact</span>Enforcement Directorate audits documented layered tax-haven company shell networks running capital flight via Trade-Based Money Laundering (TBML). <span class="tier-tag tag-fact">Fact</span>These financial manipulations utilize over-invoicing and under-invoicing mechanisms on shipping invoices to shift illicit values outside RBI monitoring arrays.</div>
+                    </div>
+                </div>
+                <a href="https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Bestpracticesontradebasedmoneylaundering.html" target="_blank" class="asset-link-box">
+                    <span class="asset-title">Open Report: FATF — Best Practices on Trade-Based Money Laundering</span>
+                    <span class="asset-icon">→</span>
+                </a>
+            </div>
+
+            <div class="resource-card">
+                <div class="card-header">
+                    <div class="card-title">4. Current Security Horizon: Blockchain Forensic Disruption Protocols (2025–2026)</div>
+                    <div class="time-badge">0.5 H</div>
+                </div>
+                <div class="advice-section">
+                    <div class="advice-block">
+                        <div class="advice-label">Verified Intelligence Profile</div>
+                        <div class="advice-text"><span class="tier-tag tag-fact">Fact</span>In 2025 and 2026, the Financial Intelligence Unit–India (FIU-IND) executed formal regulatory compliance actions against virtual digital asset service providers operating inside regional registries. <span class="tier-tag tag-attributed">Officially Attributed</span>At the 2026 Egmont Group Plenary, FIU-IND formally documented case metrics demonstrating the successful tracking and freezing of layered cross-border crypto fraud networks using automated graph-network analytics.</div>
+                    </div>
+                </div>
+                <a href="https://www.pib.gov.in/PressReleasePage.aspx?PRID=2283407&reg=48&lang=2" target="_blank" class="asset-link-box">
+                    <span class="asset-title">Open Press Release: PIB — FIU-IND Crypto Case, Egmont Plenary 2026</span>
+                    <span class="asset-icon">→</span>
+                </a>
+            </div>
+
+            <!-- Track Ledger -->
+            <div class="track-ledger">
+                <div class="ledger-title">Economic Threats Track Summation</div>
+                <div class="ledger-row"><span>1. Trust-Based Hawala Networks</span><span>2.0 H</span></div>
+                <div class="ledger-row"><span>2. Fake Currency Proliferation (FICN)</span><span>1.0 H</span></div>
+                <div class="ledger-row"><span>3. Deep Past: Trade-Based Laundering (TBML)</span><span>1.5 H</span></div>
+                <div class="ledger-row"><span>4. Contemporary Crypto Tracking (2025–2026)</span><span>0.5 H</span></div>
+                <div class="ledger-row ledger-total"><span>Total Theme Duration</span><span>5.0 H</span></div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- TRACK 7: MARITIME DEFENSE (RANK 7 - OCEAN MARINE BLUE) -->
+        <!-- ========================================== -->
+        <div id="maritime-pane" class="view-canvas">
+            
+            <div class="resource-card">
+                <div class="card-header">
+                    <div class="card-title">1. Post-Independence Genesis: West Coast Creek Geography and Security Gaps</div>
+                    <div class="time-badge">0.5 H</div>
+                </div>
+                <div class="advice-section">
+                    <div class="advice-block">
+                        <div class="advice-label">Verified Intelligence Profile</div>
+                        <div class="advice-text"><span class="tier-tag tag-fact">Fact</span>Post-independence coastal monitoring assets were structurally optimized for large commercial ports, leaving muddy creek channels along the western rim un-patrolled. <span class="tier-tag tag-fact">Fact</span>This geographic gap allowed trust-based parallel smuggling syndicates to operate unmonitored logistics loops for decades prior to the 1993 coastal contraband landings.</div>
+                    </div>
+                </div>
+                <a href="https://thewire.in/security/26-11-mumbai-terror-attack-inquiry-committee" target="_blank" class="asset-link-box">
+                    <span class="asset-title">Open Report: The Wire — Leaked Excerpts of the Pradhan Commission Report on 26/11 (never officially released by Maharashtra Govt.)</span>
+                    <span class="asset-icon">→</span>
+                </a>
+            </div>
+
+            <div class="resource-card">
+                <div class="card-header">
+                    <div class="card-title">2. Deep Past (Milestone A): The 1993 Raigad Coast Landings</div>
+                    <div class="time-badge">18.0 H</div>
+                </div>
+                <div class="advice-section">
+                    <div class="advice-block">
+                        <div class="advice-label">Verified Intelligence Profile</div>
+                        <div class="advice-text"><span class="tier-tag tag-fact">Fact</span>In February 1993, massive shipments of military-grade RDX explosives entered silently via the Shekhadi and Shrivardhan creeks along the Raigad coast. <span class="tier-tag tag-attributed">Officially Attributed</span>Judicial chargesheets formally established that foreign state-sponsored syndicates co-opted local maritime smuggling networks to transport the hardware components completely outside customs perimeters.</div>
+                    </div>
+                </div>
+                <a href="https://indiankanoon.org/doc/160740668/" target="_blank" class="asset-link-box">
+                    <span class="asset-title">Open Judgment: Supreme Court of India — Yakub Memon v. State of Maharashtra (2013)</span>
+                    <span class="asset-icon">→</span>
+                </a>
+            </div>
+
+            <div class="resource-card">
+                <div class="card-header">
+                    <div class="card-title">3. Deep Past (Milestone B): Deep Sea Vessel Hijacking and Radar Circumvention (2008)</div>
+                    <div class="time-badge">13.0 H</div>
+                </div>
+                <div class="advice-section">
+                    <div class="advice-block">
+                        <div class="advice-label">Verified Intelligence Profile</div>
+                        <div class="advice-text"><span class="tier-tag tag-fact">Fact</span>On 26 November 2008, ten seaborne militants executed a direct landing onto Mumbai's urban coordinates after highjacking an Indian commercial fishing hull, the *Kuber*, inside international waters. <span class="tier-tag tag-attributed">Officially Attributed</span>The Pradhan Commission Report formally documented the specific coastal radar blind spots that allowed small wooden fishing vessels to bypass maritime radar tracking lines.</div>
+                    </div>
+                </div>
+                <a href="https://indiankanoon.org/doc/193792759/" target="_blank" class="asset-link-box">
+                    <span class="asset-title">Open Judgment: Supreme Court of India — Kasab v. State of Maharashtra (2012)</span>
+                    <span class="asset-icon">→</span>
+                </a>
+            </div>
+
+            <div class="resource-card">
+                <div class="card-header">
+                    <div class="card-title">4. Current Security Horizon: INMSS-2026 and Multi-Sensor Littoral Defense (2025–2026)</div>
+                    <div class="time-badge">0.5 H</div>
+                </div>
+                <div class="advice-section">
+                    <div class="advice-block">
+                        <div class="advice-label">Verified Intelligence Profile</div>
+                        <div class="advice-text"><span class="tier-tag tag-fact">Fact</span>The Indian Navy codified its updated strategic architecture in 2026, integrating sub-conventional littoral defense parameters into active naval command doctrines. <span class="tier-tag tag-attributed">Officially Attributed</span>Bharat Electronics Limited (BEL) has deployed integrated Coastal Radar Systems built on multi-sensor radar-AIS data correlation loops to track small-craft transponders in real-time.</div>
+                    </div>
+                </div>
+                <a href="https://bel-india.in/product/coastal-radar-system/" target="_blank" class="asset-link-box">
+                    <span class="asset-title">Open Product Page: BEL — Coastal Radar System</span>
+                    <span class="asset-icon">→</span>
+                </a>
+            </div>
+
+            <!-- Track Ledger -->
+            <div class="track-ledger">
+                <div class="ledger-title">Maritime Defense Track Summation</div>
+                <div class="ledger-row"><span>1. Coastal Creek Smuggling Roots</span><span>0.5 H</span></div>
+                <div class="ledger-row"><span>2. Deep Past: 1993 Explosives Landings</span><span>18.0 H</span></div>
+                <div class="ledger-row"><span>3. Deep Past: 2008 Radar Evasion</span><span>13.0 H</span></div>
+                <div class="ledger-row"><span>4. Current Security Horizon (2025-2026)</span><span>0.5 H</span></div>
+                <div class="ledger-row ledger-total"><span>Total Theme Duration</span><span>32.0 H</span></div>
+            </div>
+        </div>
+
+        <!-- Global Project Footer -->
+        <div class="global-footer">
+            <div class="global-footer-text">Grand Total Time</div>
+            <div class="global-footer-time">55.5 H</div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const defaultTab = document.getElementById('default-tab');
+            if (defaultTab) {
+                defaultTab.click();
+            }
+        });
+
+        function switchCanvasView(viewPaneId, mainTitle, rankNum, themeHexColor, triggerBtn) {
+            document.querySelectorAll('.view-canvas').forEach(view => {
+                view.classList.remove('active-view');
+            });
+            
+            document.querySelectorAll('.tab-trigger').forEach(btn => {
+                btn.classList.remove('active');
+                btn.style.color = 'var(--text-muted)';
+                btn.style.backgroundColor = 'transparent';
+                btn.style.boxShadow = 'none';
+            });
+            
+            document.getElementById(viewPaneId).classList.add('active-view');
+            
+            triggerBtn.classList.add('active');
+            triggerBtn.style.color = themeHexColor;
+            
+            const hexToRgb = hex => hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, (m, r, g, b) => '#' + r + r + g + g + b + b).substring(1).match(/.{2}/g).map(x => parseInt(x, 16));
+            const [r, g, b] = hexToRgb(themeHexColor);
+            triggerBtn.style.backgroundColor = `rgba(${r}, ${g}, ${b}, 0.15)`;
+            
+            document.documentElement.style.setProperty('--lang-theme', themeHexColor);
+            document.getElementById('display-title').innerText = mainTitle;
+            document.getElementById('display-rank').innerText = rankNum;
+            
+            const activePane = document.getElementById(viewPaneId);
+            activePane.querySelectorAll('.advice-label').forEach(label => {
+                label.style.color = themeHexColor;
+            });
+        }
+
+        function toggleTheme() {
+            const toggleElement = document.getElementById('theme-toggle');
+            const targetModeSetting = toggleElement.checked ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', targetModeSetting);
+        }
+    </script>
+</body>
+</html>
